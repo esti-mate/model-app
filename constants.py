@@ -1,0 +1,2 @@
+MODEL_ID = 'gpt2'
+TOKENIZER_ID = 'gpt2'

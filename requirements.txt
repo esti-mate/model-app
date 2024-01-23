@@ -1,3 +1,6 @@
+
+# Removed the nvidia packages since GPU training was disabled for cost optimization
+
 blinker==1.7.0
 cachetools==5.3.2
 certifi==2023.11.17
