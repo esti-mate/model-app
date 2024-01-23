@@ -27,5 +27,5 @@ jobs:
       uses: google-github-actions/upload-cloud-storage@v0.5.0
       with:
         path: dist/model-app-0.1.tar.gz
-        destination: gs://estimate-bucket
+        destination: estimate-bucket
         credentials: ${{ secrets.GCP_SA_KEY }}
