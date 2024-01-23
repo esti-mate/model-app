@@ -5,3 +5,4 @@ model_app.egg-info
 
 trainer/model_store
 trainer/outputs
+**/__pycache__/

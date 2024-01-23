@@ -1,9 +1,21 @@
-from transformers import GPT2Tokenizer, Pipeline, GPT2Config
-from google.cloud import storage
 import os
 import glob
-import importlib.resources as pkg_resources
+from transformers import GPT2Tokenizer, Pipeline, GPT2Config
+from google.cloud import storage
 
+from constants import (
+    MODEL_ID,
+    TOKENIZER_ID,
+    DEVICE,
+    FINAL_MODEL_BUCKET_PATH,
+    INPUT_DIR,
+    TRAINER_DIR,
+    BATCH_SIZE_RATIO,
+    SEQUENCE_LENGTH,
+    LEARNING_RATE,
+    EPOCH,
+    SERVICE_ACCOUNT_FILE,
+)
 from .GPT2SP.GPT2ForSequenceClassification import (
     GPT2ForSequenceClassification as GPT2SP,
 )
@@ -14,6 +26,7 @@ from .utils.train_gpt2 import (
     train,
 )
 from .utils.archive_model import create_model_file
+
 
 # from constants import INPUT_DIR, TRAINER_DIR
 
@@ -26,11 +39,11 @@ from .utils.archive_model import create_model_file
 
 
 def get_gpt2sp_pipeline(model_configs: None) -> (GPT2SP, GPT2Tokenizer):
-    model = "gpt2"  # "MickyMike/0-GPT2SP-appceleratorstudio"
+    model = MODEL_ID  # "MickyMike/0-GPT2SP-appceleratorstudio"
     gpt2sp = GPT2SP.from_pretrained(model, config=model_configs)
-    gpt2sp.to("cpu")
+    gpt2sp.to(DEVICE)
 
-    tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
+    tokenizer = GPT2Tokenizer.from_pretrained(TOKENIZER_ID)
     tokenizer.pad_token = "[PAD]"
     return gpt2sp, tokenizer
 
@@ -46,24 +59,7 @@ def get_input_ids(tokenizer: GPT2Tokenizer, text: str):
     return output.data["input_ids"]
 
 
-# app = Flask(__name__)
-global SEQUENCE_LENGTH, BATCH_SIZE_RATIO, TRAINER_DIR, INPUT_DIR, EPOCH
-
-SEQUENCE_LENGTH = 1  # 20
-BATCH_SIZE_RATIO = 0.2
-LEARNING_RATE = 5e-4
-EPOCH = 1
-
-with pkg_resources.path("files", "") as p:
-    INPUT_DIR = str(p)
-
-with pkg_resources.path("trainer", "") as p:
-    TRAINER_DIR = str(p)
-
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(INPUT_DIR) + "/service-acc.json"
-# @app.route('/fetch-jira-issue')
-# def fetch_jira_issue():
-#     return startProcess()
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = SERVICE_ACCOUNT_FILE
 
 
 # def inference_gpt2sp():
@@ -108,7 +104,7 @@ def train_gpt2sp(output_dir):
         train_dl=dl,
         model=gpt2sp,
         LEARNING_RATE=LEARNING_RATE,
-        device="cpu",
+        device=DEVICE,
         epochs=EPOCH,
         output_dir=output_dir,
     )
@@ -141,9 +137,6 @@ def upload_to_gcp(bucket_name, source_folder):
     print(f"File {file_name} uploaded to {bucket_name}.")
 
 
-# Set your GCP bucket name
-bucket_name = "finished-models"
-
 # Local directory to upload files from
 
 
@@ -165,4 +158,4 @@ def startTraining():
 
     train_gpt2sp(output_dir)
     archive_model(export_path)
-    upload_to_gcp(bucket_name, export_path)
+    upload_to_gcp(FINAL_MODEL_BUCKET_PATH, export_path)
