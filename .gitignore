@@ -1,3 +1,4 @@
 env
 dist
 trainer.egg-info
+model_app.egg-info
