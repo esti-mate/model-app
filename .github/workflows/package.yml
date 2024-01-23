@@ -19,6 +19,9 @@ jobs:
         
     - name: Build Package
       run: python setup.py sdist --formats=gztar
+
+    - name: List Files
+      run : ls
       
     - name: Upload to Google Cloud Storage
       uses: google-github-actions/upload-cloud-storage@v0.5.0
