@@ -9,3 +9,4 @@ setup(
     description='estiMate training package',
     package_data={'': ['*.csv','*.json']},
 )
+# test change
