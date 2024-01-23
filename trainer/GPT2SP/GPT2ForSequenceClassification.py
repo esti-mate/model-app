@@ -2,6 +2,7 @@ from transformers.modeling_outputs import SequenceClassifierOutputWithPast
 import torch.nn as nn
 from transformers import GPT2Model, GPT2PreTrainedModel
 import torch
+from torch.nn import CrossEntropyLoss
 
 
 class GPT2ForSequenceClassification(GPT2PreTrainedModel):
@@ -20,7 +21,6 @@ class GPT2ForSequenceClassification(GPT2PreTrainedModel):
         # Model parallel
         self.model_parallel = False
         self.device_map = None
-
 
     def forward(
         self,
@@ -43,7 +43,9 @@ class GPT2ForSequenceClassification(GPT2PreTrainedModel):
             config.num_labels - 1]`. If :obj:`config.num_labels == 1` a regression loss is computed (Mean-Square loss),
             If :obj:`config.num_labels > 1` a classification loss is computed (Cross-Entropy).
         """
-        return_dict = return_dict if return_dict is not None else self.config.use_return_dict
+        return_dict = (
+            return_dict if return_dict is not None else self.config.use_return_dict
+        )
 
         transformer_outputs = self.transformer(
             input_ids,
@@ -62,7 +64,7 @@ class GPT2ForSequenceClassification(GPT2PreTrainedModel):
         # MLP Layer
         hidden_states = self.dense1(hidden_states)
         hidden_states = self.dense2(hidden_states)
-        
+
         logits = self.score(hidden_states)
 
         if input_ids is not None:
@@ -77,7 +79,9 @@ class GPT2ForSequenceClassification(GPT2PreTrainedModel):
             sequence_lengths = -1
         else:
             if input_ids is not None:
-                sequence_lengths = torch.ne(input_ids, self.config.pad_token_id).sum(-1) - 1
+                sequence_lengths = (
+                    torch.ne(input_ids, self.config.pad_token_id).sum(-1) - 1
+                )
             else:
                 sequence_lengths = -1
                 logger.warning(
@@ -95,7 +99,9 @@ class GPT2ForSequenceClassification(GPT2PreTrainedModel):
                 loss = loss_fct(pooled_logits.view(-1), labels.to(self.dtype).view(-1))
             else:
                 loss_fct = CrossEntropyLoss()
-                loss = loss_fct(pooled_logits.view(-1, self.num_labels), labels.view(-1))
+                loss = loss_fct(
+                    pooled_logits.view(-1, self.num_labels), labels.view(-1)
+                )
 
         if not return_dict:
             output = (pooled_logits,) + transformer_outputs[1:]
