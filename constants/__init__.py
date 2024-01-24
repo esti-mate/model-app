@@ -17,4 +17,4 @@ with pkg_resources.path("files", "") as p:
 with pkg_resources.path("trainer", "") as p:
     TRAINER_DIR = str(p)
 
-SERVICE_ACCOUNT_FILE = INPUT_DIR + "/service-acc.json"
+# SERVICE_ACCOUNT_FILE = INPUT_DIR + "/service-acc.json"

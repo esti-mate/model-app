@@ -13,7 +13,6 @@ from constants import (
     SEQUENCE_LENGTH,
     LEARNING_RATE,
     EPOCH,
-    SERVICE_ACCOUNT_FILE,
 )
 
 from .GPT2SP.GPT2ForSequenceClassification import (
@@ -59,7 +58,7 @@ def get_input_ids(tokenizer: GPT2Tokenizer, text: str):
     return output.data["input_ids"]
 
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = SERVICE_ACCOUNT_FILE
+# os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = SERVICE_ACCOUNT_FILE
 
 
 # def inference_gpt2sp():
