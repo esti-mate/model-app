@@ -2,7 +2,6 @@ import os
 import glob
 from transformers import GPT2Tokenizer, Pipeline, GPT2Config
 from google.cloud import storage
-
 from constants import (
     MODEL_ID,
     TOKENIZER_ID,
@@ -16,6 +15,7 @@ from constants import (
     EPOCH,
     SERVICE_ACCOUNT_FILE,
 )
+
 from .GPT2SP.GPT2ForSequenceClassification import (
     GPT2ForSequenceClassification as GPT2SP,
 )
