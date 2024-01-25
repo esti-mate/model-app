@@ -26,6 +26,8 @@ from .utils.train_gpt2 import (
 )
 from .utils.archive_model import create_model_file
 
+from .utils.deploy_model import import_model
+
 
 # from constants import INPUT_DIR, TRAINER_DIR
 
@@ -133,7 +135,9 @@ def upload_to_gcp(bucket_name, source_folder):
     file_name = os.path.basename(file_path)
     blob = bucket.blob(file_name)
     blob.upload_from_filename(file_path)
+
     print(f"File {file_name} uploaded to {bucket_name}.")
+    return bucket_name + "/" + file_name
 
 
 # Local directory to upload files from
@@ -151,10 +155,17 @@ def archive_model(export_path):
     create_model_file(export_path)
 
 
+# Main Training steps
 def startTraining():
     output_dir = create_output_dir()
     export_path = TRAINER_DIR + "/model_store"
 
     train_gpt2sp(output_dir)
     archive_model(export_path)
-    upload_to_gcp(FINAL_MODEL_BUCKET_PATH, export_path)
+    bucket_path = upload_to_gcp(FINAL_MODEL_BUCKET_PATH, export_path)
+
+    import_model(
+        "model_o2",
+        artifact_uri=bucket_path,
+        serving_container_image_uri="us-docker.pkg.dev/vertex-ai/prediction/pytorch-cpu.2-1:latest",
+    )

@@ -10,6 +10,8 @@ LEARNING_RATE = 5e-4
 EPOCH = 1
 
 # Locations
+AI_LOCATION = "us-central1"
+GCP_PROJECT_ID = "esti-mate-411304"
 FINAL_MODEL_BUCKET_PATH = "finished-models"
 with pkg_resources.path("files", "") as p:
     INPUT_DIR = str(p)
