@@ -169,7 +169,7 @@ def archive_model(export_path):
 def startTraining():
     output_dir = create_output_dir()
     model_path = TRAINER_DIR + "/model_store"
-    ORG_ID = "org01"
+    ORG_ID = "org02"
 
     train_gpt2sp(output_dir)
     archive_model(model_path)
