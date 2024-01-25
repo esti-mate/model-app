@@ -63,6 +63,6 @@ setup(
     include_package_data=True,
     install_requires=requires,
     description="estiMate training package",
-    package_data={"": ["*.csv", "*.json"]},
+    package_data={"": ["*.csv", "*.json", "*.txt"]},
 )
 # test change
