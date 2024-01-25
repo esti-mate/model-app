@@ -1,1 +1,3 @@
-from trainer import app
+# from trainer import app
+
+from tests import bucket_upload

@@ -136,13 +136,18 @@ def upload_to_gcp(bucket_name, source_folder, subdirectory):
     # Upload files to GCP bucket
     # for file_path in files:
     file_path = files[len(files) - 1]
-    file_name = os.path.basename(file_path)
+    file_name = "model.mar"  # os.path.basename(file_path)
+
+    # rename the model file to model.mar
     blob_path = f"{subdirectory}{file_name}"
     blob = bucket.blob(blob_path)
-    # blob.upload_from_filename(file_path)
+    blob.upload_from_filename(file_path)
 
-    print(f"File {file_name} uploaded to {bucket_name}.")
-    return bucket_name + "/" + subdirectory + file_name
+    print(f"File {file_name} uploaded to {blob_path}")
+    return (
+        bucket_name + "/" + subdirectory + file_name,
+        f"{bucket_name}/{subdirectory[:-2]}",
+    )
 
 
 # Local directory to upload files from
@@ -163,15 +168,18 @@ def archive_model(export_path):
 # Main Training steps
 def startTraining():
     output_dir = create_output_dir()
-    export_path = TRAINER_DIR + "/model_store"
+    model_path = TRAINER_DIR + "/model_store"
     ORG_ID = "org01"
 
     train_gpt2sp(output_dir)
-    archive_model(export_path)
-    bucket_path = upload_to_gcp(FINAL_MODEL_BUCKET_PATH, export_path, ORG_ID)
+    archive_model(model_path)
+
+    file_path, org_directory_path = upload_to_gcp(
+        FINAL_MODEL_BUCKET_PATH, model_path, ORG_ID
+    )
 
     import_model(
         "model_o2",
-        artifact_path=FINAL_MODEL_BUCKET_PATH + "/" + ORG_ID,
+        artifact_path=org_directory_path,
         serving_container_image_uri="us-docker.pkg.dev/vertex-ai/prediction/pytorch-cpu.2-1:latest",
     )
