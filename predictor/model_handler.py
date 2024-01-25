@@ -3,6 +3,7 @@ import torch
 from transformers import GPT2Config
 from ts.torch_handler.base_handler import BaseHandler
 from trainer.GPT2SP.GPT2ForSequenceClassification import GPT2ForSequenceClassification
+from trainer.train_process import get_gpt2sp_pipeline
 
 
 class GPT2Handler(BaseHandler):
@@ -13,27 +14,29 @@ class GPT2Handler(BaseHandler):
 
     def initialize(self, ctx):
         # Load the model and tokenizer
-        config = GPT2Config(num_labels=1,pad_token_id=50256)
-        gpt2sp,tokenize =  (config)
+        config = GPT2Config(num_labels=1, pad_token_id=50256)
+        gpt2sp, tokenize = get_gpt2sp_pipeline(config)
         self.model = gpt2sp
         self.tokenizer = tokenize
 
         # Load the saved state dict inputs/outputs/gpt2sp_0.pth
-        saved_state_dict_path = '/home/seniyas/IIT/fyp/repos/my-training-project/trainer/outputs/gpt2sp_0.pth'
+        saved_state_dict_path = "./gpt2sp_0.pth"
         state_dict = torch.load(saved_state_dict_path)
         self.model.load_state_dict(state_dict)
-        self.model.to('cpu')
+        self.model.to("cpu")
         self.model.eval()
         self.initialized = True
 
     def preprocess(self, data):
         # Preprocess input data
-        input_text = data[0].get('text')
+        # data=  [{'body': {'text': 'somthing'}}]
+        print("preprocess::data", data)
+        input_text = data[0].get("body").get("text")
         if not input_text:
-            raise Exception('Please provide the text to generate from')
-       
+            raise Exception("Please provide the text to generate from")
+
         # Encode the input text
-        input_ids = self.tokenizer.encode(input_text, return_tensors='pt')
+        input_ids = self.tokenizer.encode(input_text, return_tensors="pt")
         return input_ids
 
     def load_model(self, model_identifier):
@@ -42,21 +45,20 @@ class GPT2Handler(BaseHandler):
             return self.models[model_identifier]
 
         # Define the path based on the model identifier
-        model_directory = f'/path/to/models/{model_identifier}'
-        saved_state_dict_path = os.path.join(model_directory, 'model.pth')
+        model_directory = f"/path/to/models/{model_identifier}"
+        saved_state_dict_path = os.path.join(model_directory, "model.pth")
 
         # Load the model and tokenizer
         config = GPT2Config(num_labels=1, pad_token_id=50256)
         model = GPT2ForSequenceClassification(config)
         state_dict = torch.load(saved_state_dict_path)
         model.load_state_dict(state_dict)
-        model.to('cpu')
+        model.to("cpu")
         model.eval()
 
         # Save the model in the cache
         self.models[model_identifier] = model
         return model
-
 
     def inference(self, input_ids):
         # Predict

@@ -13,6 +13,7 @@ from constants import (
     SEQUENCE_LENGTH,
     LEARNING_RATE,
     EPOCH,
+    FILES_DIR,
 )
 
 from .GPT2SP.GPT2ForSequenceClassification import (
@@ -155,10 +156,10 @@ def upload_to_gcp(bucket_name, source_folder, subdirectory):
 
 def create_output_dir():
     print("Creating output dir : outputs | model_store in : " + "package_dir")
-    if not os.path.exists(TRAINER_DIR + "/outputs"):
-        os.makedirs(TRAINER_DIR + "/outputs")
-        os.makedirs(TRAINER_DIR + "/model_store")
-    return TRAINER_DIR + "/outputs"
+    if not os.path.exists(FILES_DIR + "/outputs"):
+        os.makedirs(FILES_DIR + "/outputs")
+        os.makedirs(FILES_DIR + "/model_store")
+    return FILES_DIR + "/outputs"
 
 
 def archive_model(export_path):
@@ -168,7 +169,7 @@ def archive_model(export_path):
 # Main Training steps
 def startTraining():
     output_dir = create_output_dir()
-    model_path = TRAINER_DIR + "/model_store"
+    model_path = FILES_DIR + "/model_store"
     ORG_ID = "org02"
 
     train_gpt2sp(output_dir)

@@ -3,6 +3,7 @@ dist
 trainer.egg-info
 model_app.egg-info
 
-trainer/model_store
-trainer/outputs
+files/model_store
+files/outputs
 **/__pycache__/
+logs
