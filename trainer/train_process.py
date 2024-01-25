@@ -146,7 +146,7 @@ def upload_to_gcp(bucket_name, source_folder, subdirectory):
     print(f"File {file_name} uploaded to {blob_path}")
     return (
         bucket_name + "/" + subdirectory + file_name,
-        f"{bucket_name}/{subdirectory[:-2]}",
+        f"{bucket_name}/{subdirectory[:-1]}",
     )
 
 
