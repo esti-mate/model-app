@@ -4,13 +4,13 @@ from constants import GCP_PROJECT_ID, AI_LOCATION
 
 # Import the model to vertex ai model registry
 def import_model(
-    display_name, artifact_uri, serving_container_image_uri
+    display_name, artifact_path, serving_container_image_uri
 ) -> aiplatform.Model:
     aiplatform.init(project=GCP_PROJECT_ID, location=AI_LOCATION)
 
     model = aiplatform.Model.upload(
         display_name=display_name,
-        artifact_uri=artifact_uri,
+        artifact_uri="gs://" + artifact_path,
         serving_container_image_uri=serving_container_image_uri,
         sync=True,
     )

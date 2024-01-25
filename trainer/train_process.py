@@ -166,6 +166,6 @@ def startTraining():
 
     import_model(
         "model_o2",
-        artifact_uri=bucket_path,
+        artifact_path=bucket_path,
         serving_container_image_uri="us-docker.pkg.dev/vertex-ai/prediction/pytorch-cpu.2-1:latest",
     )
