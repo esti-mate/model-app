@@ -45,6 +45,11 @@ def create_model_file(export_path):
     shutil.rmtree(files_temp_dir + "/outputs")
     shutil.rmtree(files_temp_dir + "/model_store")
 
+    paths_a = FILES_DIR.split("/")
+    paths_a.pop(-1)
+
+    requirements_path = "/".join(paths_a) + "/requirements.txt"
+
     additional_files = temp_dir + "/cp"
     model_name = "gpt2_model"
     version = "1.0"
@@ -52,5 +57,5 @@ def create_model_file(export_path):
     print(f"Creating model archive {model_name}.mar ...")
 
     # Create the .mar file
-    command = f"torch-model-archiver --model-name {model_name} --version {version} --model-file {model_file} --serialized-file {model_dir}/{serialized_file_name} --handler {handler_file} --extra-files {additional_files} --export-path {export_path} --requirements-file ./requirements.txt  --force"
+    command = f"torch-model-archiver --model-name {model_name} --version {version} --model-file {model_file} --serialized-file {model_dir}/{serialized_file_name} --handler {handler_file} --extra-files {additional_files} --export-path {export_path} --requirements-file {requirements_path}  --force"
     subprocess.run(command, shell=True)
