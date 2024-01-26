@@ -45,9 +45,9 @@ def create_model_file(export_path):
     shutil.rmtree(files_temp_dir + "/outputs")
     shutil.rmtree(files_temp_dir + "/model_store")
 
-    paths_a = FILES_DIR.split("/")
+    paths_a = model_handler.split("/")
     paths_a.pop(-1)
-    print("FILES_DIR", FILES_DIR)
+    print("FILES_DIR", model_handler)
     requirements_path = "/".join(paths_a) + "/requirements.txt"
     print("requirements_path", requirements_path)
 
