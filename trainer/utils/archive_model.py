@@ -47,8 +47,9 @@ def create_model_file(export_path):
 
     paths_a = FILES_DIR.split("/")
     paths_a.pop(-1)
-
+    print("FILES_DIR", FILES_DIR)
     requirements_path = "/".join(paths_a) + "/requirements.txt"
+    print("requirements_path", requirements_path)
 
     additional_files = temp_dir + "/cp"
     model_name = "gpt2_model"
