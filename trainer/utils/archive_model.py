@@ -50,7 +50,7 @@ def create_model_file(export_path):
     print("requirements_path", requirements_path)
 
     additional_files = temp_dir + "/cp"
-    model_name = "gpt2_model"
+    model_name = "model"
     version = "1.0"
 
     print(f"Creating model archive {model_name}.mar ...")
