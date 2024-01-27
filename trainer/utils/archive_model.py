@@ -45,13 +45,9 @@ def create_model_file(export_path):
     shutil.rmtree(files_temp_dir + "/outputs")
     shutil.rmtree(files_temp_dir + "/model_store")
 
-    paths_a = model_handler.split("/")
-    paths_a.pop(-1)
-    print("FILES_DIR", model_handler)
-    requirements_path = "/".join(paths_a) + "model-app/requirements.txt"
+    # requirements.txt file will be copied to files package when deployment happens
+    requirements_path = FILES_DIR + "/requirements.txt"
     print("requirements_path", requirements_path)
-
-    subprocess.run(f'ls {"/".join(paths_a)}')
 
     additional_files = temp_dir + "/cp"
     model_name = "gpt2_model"
