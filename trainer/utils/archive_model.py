@@ -51,7 +51,7 @@ def create_model_file(export_path):
     requirements_path = "/".join(paths_a) + "model-app/requirements.txt"
     print("requirements_path", requirements_path)
 
-    subprocess.run(f'ls {"/".join(paths_a)+"/model-app"}')
+    subprocess.run(f'ls {"/".join(paths_a)}')
 
     additional_files = temp_dir + "/cp"
     model_name = "gpt2_model"
