@@ -180,7 +180,7 @@ def startTraining():
     )
 
     import_model(
-        "model_o2",
+        "gpt2_model",
         artifact_path=org_directory_path,
         serving_container_image_uri="us-docker.pkg.dev/vertex-ai/prediction/pytorch-cpu.2-1:latest",
     )
