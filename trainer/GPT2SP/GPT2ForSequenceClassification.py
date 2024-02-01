@@ -13,7 +13,10 @@ class GPT2ForSequenceClassification(GPT2PreTrainedModel):
         self.num_labels = config.num_labels
         self.transformer = GPT2Model(config)
         self.dense1 = nn.Linear(config.n_embd, 4 * config.n_embd, bias=False)
+        self.norm1 = nn.LayerNorm(4 * config.n_embd)
         self.dense2 = nn.Linear(4 * config.n_embd, config.n_embd, bias=False)
+        self.norm2 = nn.LayerNorm(config.n_embd)
+
         self.score = nn.Linear(config.n_embd, self.num_labels, bias=False)
 
         self.init_weights()
@@ -63,7 +66,12 @@ class GPT2ForSequenceClassification(GPT2PreTrainedModel):
         hidden_states = transformer_outputs[0]
         # MLP Layer
         hidden_states = self.dense1(hidden_states)
+        hidden_states = self.norm1(hidden_states)
+        hidden_states = torch.relu(hidden_states)
+
         hidden_states = self.dense2(hidden_states)
+        hidden_states = self.norm2(hidden_states)
+        hidden_states = torch.relu(hidden_states)
 
         logits = self.score(hidden_states)
 
