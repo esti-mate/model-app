@@ -16,11 +16,11 @@ class GPT2ForSequenceClassification(GPT2PreTrainedModel):
         self.dense1 = nn.Linear(config.n_embd, 4 * config.n_embd, bias=False)
         self.norm1 = nn.LayerNorm(4 * config.n_embd)
 
-        self.dense2 = nn.Linear(4 * config.n_embd, 2 * config.n_embd, bias=False)
-        self.norm2 = nn.LayerNorm(2 * config.n_embd)
+        self.dense2 = nn.Linear(4 * config.n_embd, config.n_embd, bias=False)
+        self.norm2 = nn.LayerNorm(config.n_embd)
 
-        self.dense3 = nn.Linear(2 * config.n_embd, config.n_embd, bias=False)
-        self.norm3 = nn.LayerNorm(config.n_embd)
+        # self.dense3 = nn.Linear(2 * config.n_embd, config.n_embd, bias=False)
+        # self.norm3 = nn.LayerNorm(config.n_embd)
 
         self.score = nn.Linear(config.n_embd, self.num_labels, bias=False)
 
@@ -72,15 +72,15 @@ class GPT2ForSequenceClassification(GPT2PreTrainedModel):
         # MLP Layer
         hidden_states = self.dense1(hidden_states)
         hidden_states = self.norm1(hidden_states)
-        hidden_states = torch.relu(hidden_states)
+        hidden_states = F.gelu(hidden_states)
 
         hidden_states = self.dense2(hidden_states)
         hidden_states = self.norm2(hidden_states)
-        hidden_states = torch.relu(hidden_states)
+        hidden_states = F.gelu(hidden_states)
 
-        hidden_states = self.dense3(hidden_states)
-        hidden_states = self.norm3(hidden_states)
-        hidden_states = torch.relu(hidden_states)
+        # hidden_states = self.dense3(hidden_states)
+        # hidden_states = self.norm3(hidden_states)
+        # hidden_states = F.gelu(hidden_states)
 
         logits = self.score(hidden_states)
 
